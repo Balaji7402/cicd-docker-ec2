@@ -20,3 +20,4 @@ jobs:
             hostname
             pwd
             echo "SSH CONNECTION SUCCESSFUL"
+
