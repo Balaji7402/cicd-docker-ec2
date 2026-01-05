@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout code in GitHub runner
+      # Step 1: Checkout your repo on GitHub Actions runner
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Copy code to EC2 (works with private repo)
+      # Step 2: Copy the repo to EC2
       - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -24,8 +24,8 @@ jobs:
           source: "."
           target: "/home/ec2-user/cicd-docker-app"
 
-      # 3️⃣ Deploy and manage Docker on EC2
-      - name: Deploy on EC2
+      # Step 3: Deploy Docker on EC2
+      - name: Deploy Docker container
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -34,14 +34,20 @@ jobs:
           script: |
             set -e
             cd /home/ec2-user/cicd-docker-app
-            # Stop old container if exists
+
+            # Stop & remove old container if exists
             sudo docker stop cicd-app || true
             sudo docker rm cicd-app || true
+
             # Build new Docker image
             sudo docker build -t cicd-app .
-            # Run container in detached mode, map port 80
+
+            # Run the container detached, map port 80
             sudo docker run -d -p 80:80 --name cicd-app cicd-app
-            echo "✅ Deployment complete!"
+
+            # Show running containers for verification
+            sudo docker ps
+
 
 
 
