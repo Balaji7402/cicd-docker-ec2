@@ -18,13 +18,13 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             set -e
-            echo "Connected to EC2"
             cd /home/ec2-user/cicd-docker-app
             git pull origin main || true
             sudo docker stop cicd-app || true
             sudo docker rm cicd-app || true
             sudo docker build -t cicd-app .
             sudo docker run -d -p 80:80 --name cicd-app cicd-app
+
 
 
 
